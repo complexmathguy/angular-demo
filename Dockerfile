@@ -23,7 +23,7 @@ RUN ls /var/www/angular-demo/src
 # install Angular-CLI and a core dependency
 RUN cd /var/www/angular-demo
 RUN npm install @angular-devkit/build-angular@0.1102.7
-npm install -g @angular/cli@11.2.7 > /dev/null
+RUN npm install -g @angular/cli@11.2.7 > /dev/null
 
 # prepare entrypoint
 RUN dos2unix /var/www/entrypoint.sh
