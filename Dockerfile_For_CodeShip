@@ -1,0 +1,24 @@
+FROM node:12
+
+# this allows for updates to take place without failure
+RUN printf "deb http://archive.debian.org/debian/ jessie main\ndeb-src http://archive.debian.org/debian/ jessie main\ndeb http://security.debian.org jessie/updates main\ndeb-src http://security.debian.org jessie/updates main" > /etc/apt/sources.list
+
+# install dos2unix
+RUN apt-get update --fix-missing && \
+apt-get install -y dos2unix
+
+# copy all file to a working directory
+ARG PROJECT=angular-demo
+ARG PROJECT_DIR=/var/www/${PROJECT}
+RUN mkdir -p $PROJECT_DIR
+COPY /tmp/code/gitRoot /var/www/
+RUN ls /var/www
+RUN ls /var/www/angular-demo
+
+# install the Angular CLI, pip to /dev/null to remove analytics invocation
+RUN npm install -g @angular/cli@11.2.7 > /dev/null
+
+# prepare entrypoint
+RUN dos2unix /var/www/entrypoint.sh
+RUN chmod +x /var/www/entrypoint.sh
+ENTRYPOINT ["/var/www/entrypoint.sh"]
