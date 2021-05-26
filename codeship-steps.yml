@@ -1,0 +1,10 @@
+- service: angular-demoService
+  name: Build Project angular-demo
+  command: ./gitRoot/projectbuild.sh
+- service: adddocker
+  type: push
+  name: Docker Build and Push
+  image_name: realmethods/angular-demo
+  image_tag: latest
+  registry: https://index.docker.io/v1/
+  encrypted_dockercfg_path: .dockercfg

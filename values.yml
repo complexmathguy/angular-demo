@@ -1,0 +1,9 @@
+gitRepo:
+  gitProvider: git_test
+  path: complexmathguy/angular-demo
+  DockerUserName: tylertravismya
+  DockerPassword: 69cutlass
+  DockerOrgName: theharbormaster
+  DockerRepo: angular-demo
+  DockerHost: 
+  DockerTag: latest

@@ -1,0 +1,54 @@
+version: 0.2
+env:
+  variables:
+    BUILD_ENV: "dev"
+
+phases:
+  install:
+    runtime-versions:
+        nodejs: 12
+    commands:
+
+
+      - sudo npm install -g @angular/cli@11.2.7 > /dev/null
+ 
+      - sudo mkdir -p appRoot 
+      - cd appRoot && sudo ng new angular-demo --defaults 
+      - sudo cp -r angular-demo/. appRoot/angular-demo 
+      - cd appRoot/angular-demo && sudo npm install --${BUILD_ENV} > /dev/null 
+      - cd appRoot/angular-demo && sudo npm run setup 
+    finally:
+      - echo Install phase complete...
+  build:
+    commands:
+      - cd appRoot/angular-demo && sudo ng build #--base-href /angular-demo/ 
+  post_build:
+    commands:
+      - echo Building Docker Image...
+      - cd ${CODEBUILD_SRC_DIR}
+      - docker login --username tylertravismya --password 69cutlass
+      - docker build -t theharbormaster/angular-demo:latest .
+      - docker push theharbormaster/angular-demo:latest 
+
+      - echo Installing Terraform...
+      - wget https://releases.hashicorp.com/terraform/0.11.13/terraform_0.11.13_linux_amd64.zip
+      - unzip ./terraform_0.11.13_linux_amd64.zip -d /usr/local/bin/
+      - terraform -v
+      - echo Running Terraform plan...
+      - echo initializaing terraform
+      - cd terraform && terraform init --input=false"
+      - echo running terraform plan
+      - terraform plan --input=false --out=terraform.plan -var host=https://xxx.xxx.xxx.xxx -var username= -var password= -var region=- -var project=
+      - echo running terraform plan
+      terraform apply -auto-approve "terraform.plan"
+
+artifacts:
+  files:
+  - '**/*'
+  base-directory: 'dist*'
+  discard-paths: yes
+  cache:
+    paths:
+      - '/node_modules/**/*'
+    finally:
+      - echo Build phase complete

@@ -1,0 +1,28 @@
+
+image: node:12
+
+pipelines:
+  default:
+  - step:
+      name: install dependencies and building angular-demo 
+      script:
+
+        - sudo npm install -g @angular/cli@11.2.7 > /dev/null
+
+        - sudo mkdir -p appRoot
+        - cd appRoot && sudo ng new angular-demo --defaults
+        - sudo cp -r angular-demo/. appRoot/angular-demo
+        - cd appRoot/angular-demo && sudo npm install --${BUILD_ENV} > /dev/null
+        - cd appRoot/angular-demo && sudo npm run setup
+        - cd appRoot/angular-demo && sudo ng build #--base-href /angular-demo/
+
+      caches:
+          - node
+      services:
+          - mongo
+
+definitions:
+  services:
+    mongo: 
+      image: mongo
+
